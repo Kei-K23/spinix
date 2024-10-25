@@ -1,6 +1,7 @@
 package termloader
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -23,5 +24,19 @@ func NewLoader(style string, theme []string, speed time.Duration) *Loader {
 		Speed:  speed,
 		Active: false,
 		StopCh: make(chan struct{}),
+	}
+}
+
+func (l *Loader) animate() {
+	frameIdx := 0
+	for {
+		select {
+		case <-l.StopCh:
+			return
+		default:
+			fmt.Printf("\r%s %s\n", l.Theme[frameIdx], l.Message)
+			time.Sleep(l.Speed)
+			frameIdx = (frameIdx + 1) % len(l.Theme)
+		}
 	}
 }
