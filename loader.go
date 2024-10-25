@@ -7,71 +7,91 @@ import (
 )
 
 type Loader struct {
-	Style       string        // Spinner or loader
-	Theme       []string      // Loader animation style
-	Speed       time.Duration // Interval to update the loader
-	Message     string        // Message to show next to loader
-	ShowMessage bool          // Indicate to show message or not
-	Active      bool          // Status for loading indicator
-	Mutex       sync.Mutex    // For thread-safe
-	StopCh      chan struct{} // Channel to send stop signal
+	style        string        // Spinner or loader
+	theme        []string      // Loader animation style
+	loaderColor  string        // Color for loader
+	speed        time.Duration // Interval to update the loader
+	message      string        // Message to show next to loader
+	messageColor string        // Color for message text
+	showMessage  bool          // Indicate to show message or not
+	active       bool          // Status for loading indicator
+	mutex        sync.Mutex    // For thread-safe
+	stopCh       chan struct{} // Channel to send stop signal
 }
 
-func NewLoader(style string, theme []string, speed time.Duration) *Loader {
+func NewLoader(style string, speed time.Duration) *Loader {
 	return &Loader{
-		Style:  style,
-		Theme:  theme,
-		Speed:  speed,
-		Active: false,
-		StopCh: make(chan struct{}),
+		style:       style,
+		theme:       ClassicDots,
+		speed:       speed,
+		active:      false,
+		showMessage: true,
+		stopCh:      make(chan struct{}),
 	}
 }
 
 func (l *Loader) Start() {
-	l.Mutex.Lock()
-	defer l.Mutex.Unlock()
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
 
 	// If already start the loader, then exist the function
-	if l.Active {
+	if l.active {
 		return
 	}
 
-	l.Active = true
+	l.active = true
 	go l.animate()
 }
 
 func (l *Loader) Stop() {
-	l.Mutex.Lock()
-	defer l.Mutex.Unlock()
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
 
-	if !l.Active {
+	if !l.active {
 		return
 	}
 
-	close(l.StopCh)                // Send close signal
-	l.StopCh = make(chan struct{}) // Reset channel
-	l.Active = false
+	close(l.stopCh)                // Send close signal
+	l.stopCh = make(chan struct{}) // Reset channel
+	l.active = false
 	fmt.Print("\r\033[K") // Clear line after stopping
 }
 
-func (l *Loader) SetColor(colorCode string) {
-	l.Message = colorCode + l.Message + "\033[0m"
+func (l *Loader) SetMessageColor(colorCode string) *Loader {
+	l.messageColor = colorCode
+	return l
 }
 
-func (l *Loader) SetTheme(theme []string) {
-	l.Theme = theme
+func (l *Loader) SetLoaderColor(colorCode string) *Loader {
+	l.loaderColor = colorCode
+	return l
+}
+
+func (l *Loader) SetMessage(message string) *Loader {
+	l.message = message
+	return l
+}
+
+func (l *Loader) SetShowMessage(isShow bool) *Loader {
+	l.showMessage = isShow
+	return l
+}
+
+func (l *Loader) SetTheme(theme []string) *Loader {
+	l.theme = theme
+	return l
 }
 
 func (l *Loader) animate() {
 	frameIdx := 0
 	for {
 		select {
-		case <-l.StopCh:
+		case <-l.stopCh:
 			return
 		default:
-			fmt.Printf("\r%s %s\n", l.Theme[frameIdx], l.Message)
-			time.Sleep(l.Speed)
-			frameIdx = (frameIdx + 1) % len(l.Theme)
+			fmt.Printf("\r%s%s\033[0m %s%s\033[0m", l.loaderColor, l.theme[frameIdx], l.messageColor, l.message)
+			time.Sleep(l.speed)
+			frameIdx = (frameIdx + 1) % len(l.theme)
 		}
 	}
 }
