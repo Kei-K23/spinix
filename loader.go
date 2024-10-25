@@ -27,6 +27,41 @@ func NewLoader(style string, theme []string, speed time.Duration) *Loader {
 	}
 }
 
+func (l *Loader) Start() {
+	l.Mutex.Lock()
+	defer l.Mutex.Unlock()
+
+	// If already start the loader, then exist the function
+	if l.Active {
+		return
+	}
+
+	l.Active = true
+	go l.animate()
+}
+
+func (l *Loader) Stop() {
+	l.Mutex.Lock()
+	defer l.Mutex.Unlock()
+
+	if !l.Active {
+		return
+	}
+
+	close(l.StopCh)                // Send close signal
+	l.StopCh = make(chan struct{}) // Reset channel
+	l.Active = false
+	fmt.Print("\r\033[K") // Clear line after stopping
+}
+
+func (l *Loader) SetColor(colorCode string) {
+	l.Message = colorCode + l.Message + "\033[0m"
+}
+
+func (l *Loader) SetTheme(theme []string) {
+	l.Theme = theme
+}
+
 func (l *Loader) animate() {
 	frameIdx := 0
 	for {
