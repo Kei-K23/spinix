@@ -35,7 +35,7 @@ func main() {
 	spinner := spinix.NewSpinner()
     .SetMessage("Loading...")
     .SetLoaderColor("\033[34m") // Blue
-	.SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
+    .SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
 
 	spinner.Start()
 
@@ -55,7 +55,7 @@ package main
 
 import (
 	"time"
-	"github.com/yourusername/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix" // Replace with your actual import path
 )
 
 func main() {
@@ -81,12 +81,16 @@ func main() {
 You can customize the spinner’s message, colors, and theme:
 
 ```go
-spinner := spinix.NewSpinner()
-.SetMessage("Processing...")
-.SetMessageColor("\033[33m") // Yellow
-.SetTheme(spinix.SpinnerRotatingArrow)
+func main() {
+	spinner := spinix.NewSpinner().
+		SetMessage("Processing...").
+		SetMessageColor("\033[33m").
+		SetCustomTheme([]string{"🔅", "🔆", "🔅", "🔆"})
 
-spinner.Start()
+	spinner.Start()
+	time.Sleep(2 * time.Second) // Simulate a task
+	spinner.Stop()
+}
 ```
 
 ### Progress Bars
@@ -94,13 +98,66 @@ spinner.Start()
 You can customize the progress bar's appearance using various methods:
 
 ```go
-progressBar := spinix.NewProgressBar()
-.SetWidth(60)
-.SetBarChar("█")
-.SetEmptyChar("░")
-.SetBorders("[", "]")
-.SetShowPercentage(true)
-progressBar.Start()
+func main() {
+	progressBar := spinix.NewProgressBar().
+		SetWidth(60).
+		SetBarChar("█").
+		SetEmptyChar("░").
+		SetBorders("[", "]").
+		SetShowPercentage(true)
+
+	progressBar.Start()
+
+	for i := 0; i <= 100; i++ {
+		progressBar.Update(i)
+		time.Sleep(50 * time.Millisecond) // Simulate work
+	}
+
+	progressBar.Stop()
+}
+```
+
+## Use Pre-defined Spinner and Progress bar
+
+### Spinners
+
+You can use pre-defined spinner theme that provided by **spinix**:
+
+```go
+func main() {
+	spinner := spinix.NewSpinner().
+		SetMessage("Processing...").
+		SetMessageColor("\033[33m").
+		SetTheme(spinix.SpinnerRotatingArrow)
+
+	spinner.Start()
+
+	// Simulate some work
+	time.Sleep(5 * time.Second)
+
+	spinner.Stop()
+}
+```
+
+### Progress Bars
+
+You can use pre-defined progress bar style that provided by **spinix**:
+
+```go
+func main() {
+	progressBar := spinix.NewProgressBar().
+		SetStyle(spinix.PbStyleBasic).
+		SetShowPercentage(true)
+
+	progressBar.Start()
+
+	for i := 0; i <= 100; i++ {
+		progressBar.Update(i)
+		time.Sleep(50 * time.Millisecond) // Simulate work
+	}
+
+	progressBar.Stop()
+}
 ```
 
 ## Available Spinner Themes
@@ -163,7 +220,7 @@ package main
 
 import (
 	"time"
-	"github.com/yourusername/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix" // Replace with your actual import path
 )
 
 func main() {
