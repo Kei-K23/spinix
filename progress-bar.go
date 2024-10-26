@@ -38,6 +38,52 @@ func NewProgressBar() *ProgressBar {
 	}
 }
 
+func (pb *ProgressBar) SetWidth(width int) *ProgressBar {
+	pb.width = width
+	return pb
+}
+
+func (pb *ProgressBar) SetLabel(label string) *ProgressBar {
+	pb.label = label
+	pb.showLabel = true
+	return pb
+}
+
+func (pb *ProgressBar) SetShowPercentage(show bool) *ProgressBar {
+	pb.showPercentage = show
+	return pb
+}
+
+func (pb *ProgressBar) SetBarChar(char string) *ProgressBar {
+	pb.barChar = char
+	return pb
+}
+
+func (pb *ProgressBar) SetEmptyChar(char string) *ProgressBar {
+	pb.emptyChar = char
+	return pb
+}
+
+func (pb *ProgressBar) SetLeftBorder(char string) *ProgressBar {
+	pb.leftBorder = char
+	return pb
+}
+
+func (pb *ProgressBar) SetRightBorder(char string) *ProgressBar {
+	pb.rightBorder = char
+	return pb
+}
+
+func (pb *ProgressBar) SetSpeed(speed time.Duration) *ProgressBar {
+	pb.speed = speed
+	return pb
+}
+
+func (pb *ProgressBar) SetColor(color string) *ProgressBar {
+	pb.color = color
+	return pb
+}
+
 func (pb *ProgressBar) Start() {
 	pb.mutex.Lock()
 	defer pb.mutex.Unlock()
