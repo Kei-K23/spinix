@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	loader := termloader.NewLoader("spinner", 100*time.Millisecond).SetShowMessage(true).SetMessage("Loading...").SetLoaderColor("\033[32m").SetMessageColor("\033[34m")
+	spinner := termloader.NewSpinner()
 
-	loader.Start()
+	spinner.Start()
 	time.Sleep(3 * time.Second)
-	loader.Stop()
+	spinner.Stop()
 }

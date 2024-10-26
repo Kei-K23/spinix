@@ -6,9 +6,8 @@ import (
 	"time"
 )
 
-type Loader struct {
-	style        string        // Spinner or loader
-	theme        []string      // Loader animation style
+type Spinner struct {
+	theme        []string      // Spinner animation style
 	loaderColor  string        // Color for loader
 	speed        time.Duration // Interval to update the loader
 	message      string        // Message to show next to loader
@@ -19,18 +18,17 @@ type Loader struct {
 	stopCh       chan struct{} // Channel to send stop signal
 }
 
-func NewLoader(style string, speed time.Duration) *Loader {
-	return &Loader{
-		style:       style,
+func NewSpinner() *Spinner {
+	return &Spinner{
 		theme:       ClassicDots,
-		speed:       speed,
+		speed:       100 * time.Millisecond,
 		active:      false,
 		showMessage: true,
 		stopCh:      make(chan struct{}),
 	}
 }
 
-func (l *Loader) Start() {
+func (l *Spinner) Start() {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 
@@ -43,7 +41,7 @@ func (l *Loader) Start() {
 	go l.animate()
 }
 
-func (l *Loader) Stop() {
+func (l *Spinner) Stop() {
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 
@@ -57,32 +55,37 @@ func (l *Loader) Stop() {
 	fmt.Print("\r\033[K") // Clear line after stopping
 }
 
-func (l *Loader) SetMessageColor(colorCode string) *Loader {
+func (l *Spinner) SetMessageColor(colorCode string) *Spinner {
 	l.messageColor = colorCode
 	return l
 }
 
-func (l *Loader) SetLoaderColor(colorCode string) *Loader {
+func (l *Spinner) SetLoaderColor(colorCode string) *Spinner {
 	l.loaderColor = colorCode
 	return l
 }
 
-func (l *Loader) SetMessage(message string) *Loader {
+func (l *Spinner) SetMessage(message string) *Spinner {
 	l.message = message
 	return l
 }
 
-func (l *Loader) SetShowMessage(isShow bool) *Loader {
+func (l *Spinner) SetShowMessage(isShow bool) *Spinner {
 	l.showMessage = isShow
 	return l
 }
 
-func (l *Loader) SetTheme(theme []string) *Loader {
+func (l *Spinner) SetTheme(theme []string) *Spinner {
 	l.theme = theme
 	return l
 }
 
-func (l *Loader) animate() {
+func (l *Spinner) SetSpeed(speed time.Duration) *Spinner {
+	l.speed = speed
+	return l
+}
+
+func (l *Spinner) animate() {
 	frameIdx := 0
 	for {
 		select {
