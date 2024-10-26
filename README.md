@@ -1,5 +1,7 @@
 # Spinix
 
+[![Go Test](https://github.com/Kei-K23/spinix/actions/workflows/test.yml/badge.svg)](https://github.com/Kei-K23/spinix/actions/workflows/test.yml)
+
 **Spinix** 🌀 is a **Go package** that provides terminal-based loading animations, including spinners and progress bars. It supports customizable themes, colors, and speeds, allowing developers to create visually appealing loading indicators that can fit various terminal environments and aesthetics.
 
 ## Features
