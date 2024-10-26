@@ -14,7 +14,7 @@ Spinix is a Go package that provides terminal-based loading animations, includin
 To install Spinix, use `go get`:
 
 ```bash
-go get github.com/yourusername/spinix
+go get github.com/Kei-K23/spinix
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ package main
 
 import (
 	"time"
-	"github.com/yourusername/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix" // Replace with your actual import path
 )
 
 func main() {
