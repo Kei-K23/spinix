@@ -22,5 +22,15 @@ type ProgressBar struct {
 }
 
 func NewProgressBar() *ProgressBar {
-	return &ProgressBar{}
+	return &ProgressBar{
+		width:          40,
+		barChar:        "█",
+		emptyChar:      " ",
+		leftBorder:     "[",
+		rightBorder:    "]",
+		color:          "\033[32m", // Green color as default
+		showPercentage: true,
+		stopCh:         make(chan interface{}),
+		speed:          100 * time.Millisecond,
+	}
 }

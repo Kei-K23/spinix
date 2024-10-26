@@ -23,6 +23,7 @@ func NewSpinner() *Spinner {
 		theme:       ClassicDots,
 		speed:       100 * time.Millisecond,
 		active:      false,
+		loaderColor: "\033[32m", // Green color as default,
 		showMessage: true,
 		stopCh:      make(chan struct{}),
 	}
