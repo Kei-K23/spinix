@@ -38,6 +38,33 @@ func NewProgressBar() *ProgressBar {
 	}
 }
 
+func (pb *ProgressBar) Start() {
+	pb.mutex.Lock()
+	defer pb.mutex.Unlock()
+
+	// Check the progress is already started, then exist the function
+	if pb.active {
+		return
+	}
+
+	pb.active = true
+	go pb.animate() // Start the progress bar
+}
+
+func (pb *ProgressBar) Stop() {
+	pb.mutex.Lock()
+	defer pb.mutex.Unlock()
+
+	if !pb.active {
+		return
+	}
+
+	close(pb.stopCh)                   // Send stop signal
+	pb.stopCh = make(chan interface{}) // Reinitialize the channel to be more consistence
+	pb.active = false
+	fmt.Print("\r\033[K") // Clear line after stopping
+}
+
 func (pb *ProgressBar) Update(progress int) {
 	pb.mutex.Lock()
 	defer pb.mutex.Unlock()
