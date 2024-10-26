@@ -1,6 +1,6 @@
 # Spinix
 
-Spinix is a Go package that provides terminal-based loading animations, including spinners and progress bars. It supports customizable themes, colors, and speeds, allowing developers to create visually appealing loading indicators that can fit various terminal environments and aesthetics.
+Spinix 🌀 is a Go package that provides terminal-based loading animations, including spinners and progress bars. It supports customizable themes, colors, and speeds, allowing developers to create visually appealing loading indicators that can fit various terminal environments and aesthetics.
 
 ## Features
 
@@ -33,9 +33,9 @@ import (
 
 func main() {
 	spinner := spinix.NewSpinner()
-	spinner.SetMessage("Loading...")
-	spinner.SetLoaderColor("\033[34m") // Blue
-	spinner.SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
+    .SetMessage("Loading...")
+    .SetLoaderColor("\033[34m") // Blue
+	.SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
 
 	spinner.Start()
 
@@ -60,10 +60,10 @@ import (
 
 func main() {
 	progressBar := spinix.NewProgressBar()
-	progressBar.SetWidth(50)
-	progressBar.SetColor("\033[32m") // Green
-	progressBar.SetLabel("Progress:")
-	progressBar.Start()
+	.SetWidth(50)
+	.SetColor("\033[32m") // Green
+	.SetLabel("Progress:")
+	.Start()
 
 	for i := 0; i <= 100; i++ {
 		progressBar.Update(i)
@@ -82,9 +82,10 @@ You can customize the spinner’s message, colors, and theme:
 
 ```go
 spinner := spinix.NewSpinner()
-spinner.SetMessage("Processing...")
-spinner.SetMessageColor("\033[33m") // Yellow
-spinner.SetTheme(spinix.SpinnerRotatingArrow)
+.SetMessage("Processing...")
+.SetMessageColor("\033[33m") // Yellow
+.SetTheme(spinix.SpinnerRotatingArrow)
+
 spinner.Start()
 ```
 
@@ -94,11 +95,11 @@ You can customize the progress bar's appearance using various methods:
 
 ```go
 progressBar := spinix.NewProgressBar()
-progressBar.SetWidth(60)
-progressBar.SetBarChar("█")
-progressBar.SetEmptyChar("░")
-progressBar.SetBorders("[", "]")
-progressBar.SetShowPercentage(true)
+.SetWidth(60)
+.SetBarChar("█")
+.SetEmptyChar("░")
+.SetBorders("[", "]")
+.SetShowPercentage(true)
 progressBar.Start()
 ```
 
@@ -107,9 +108,9 @@ progressBar.Start()
 The Spinix package comes with several predefined spinner themes. Here’s a list of the available styles along with their visualizations:
 
 | Spinner Theme            | Visualization                                |
-| ------------------------ | -------------------------------------------- | --- |
+| ------------------------ | -------------------------------------------- |
 | **SpinnerClassicDots**   | ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏                          |
-| **SpinnerLineTheme**     | - \                                          | /   |
+| **SpinnerLineTheme**     | - \                                          |
 | **SpinnerPulsatingDot**  | ⠁ ⠂ ⠄ ⠂                                      |
 | **SpinnerGrowingBlock**  | ▁ ▃ ▄ ▅ ▆ ▇ █ ▇ ▆ ▅ ▄ ▃                      |
 | **SpinnerRotatingArrow** | → ↘ ↓ ↙ ← ↖ ↑ ↗                              |
