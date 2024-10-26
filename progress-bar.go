@@ -1,6 +1,8 @@
 package termloader
 
 import (
+	"fmt"
+	"strings"
 	"sync"
 	"time"
 )
@@ -44,4 +46,39 @@ func (pb *ProgressBar) Update(progress int) {
 	if pb.progress >= 0 && pb.progress <= 100 {
 		pb.progress = progress
 	}
+}
+
+func (pb *ProgressBar) animate() {
+	for {
+		select {
+		case <-pb.stopCh:
+			return
+		default:
+			pb.render()
+			time.Sleep(pb.speed)
+		}
+	}
+}
+
+func (pb *ProgressBar) render() {
+	pb.mutex.Lock()
+	defer pb.mutex.Unlock()
+
+	// Calculate width that need to be filled for progress bar
+	fillWidth := int(float64(pb.width) * float64(pb.progress) / 100)
+	// Calculate width for empty space
+	emptyWidth := pb.width - fillWidth
+
+	// Construct the progress bar
+	bar := fmt.Sprintf("\r%s%s%s%s%s", pb.color, pb.leftBorder, strings.Repeat(pb.barChar, fillWidth), strings.Repeat(pb.emptyChar, emptyWidth), pb.rightBorder)
+
+	// Add percentage and label if provided
+	if pb.showPercentage {
+		bar += fmt.Sprintf(" %3d%%", pb.progress)
+	}
+	if pb.showLabel {
+		bar += fmt.Sprintf(" %s", pb.label)
+	}
+
+	fmt.Print(bar)
 }
