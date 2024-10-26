@@ -68,11 +68,7 @@ func (l *Spinner) SetLoaderColor(colorCode string) *Spinner {
 
 func (l *Spinner) SetMessage(message string) *Spinner {
 	l.message = message
-	return l
-}
-
-func (l *Spinner) SetShowMessage(isShow bool) *Spinner {
-	l.showMessage = isShow
+	l.showMessage = true // When set message that mean message is already need to be show
 	return l
 }
 
