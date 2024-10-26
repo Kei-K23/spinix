@@ -1,6 +1,6 @@
 # Spinix
 
-Spinix 🌀 is a Go package that provides terminal-based loading animations, including spinners and progress bars. It supports customizable themes, colors, and speeds, allowing developers to create visually appealing loading indicators that can fit various terminal environments and aesthetics.
+**Spinix** 🌀 is a **Go package** that provides terminal-based loading animations, including spinners and progress bars. It supports customizable themes, colors, and speeds, allowing developers to create visually appealing loading indicators that can fit various terminal environments and aesthetics.
 
 ## Features
 
@@ -11,7 +11,7 @@ Spinix 🌀 is a Go package that provides terminal-based loading animations, inc
 
 ## Installation
 
-To install Spinix, use `go get`:
+To install **Spinix**, use `go get`:
 
 ```bash
 go get github.com/Kei-K23/spinix
@@ -28,14 +28,14 @@ package main
 
 import (
 	"time"
-	"github.com/Kei-K23/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix"
 )
 
 func main() {
-	spinner := spinix.NewSpinner()
-    .SetMessage("Loading...")
-    .SetLoaderColor("\033[34m") // Blue
-    .SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
+	spinner := spinix.NewSpinner().
+		SetMessage("Loading...").
+		SetLoaderColor("\033[34m").
+		SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
 
 	spinner.Start()
 
@@ -43,7 +43,15 @@ func main() {
 	time.Sleep(5 * time.Second)
 
 	spinner.Stop()
+
+    // spinix.NewSpinner() will also create spinner with default properties
+    // e.g
+    // spinner := spinix.NewSpinner()
+	// spinner.Start()
+	// time.Sleep(5 * time.Second)
+	// spinner.Stop()
 }
+
 ```
 
 ### Progress Bars
@@ -55,15 +63,16 @@ package main
 
 import (
 	"time"
-	"github.com/Kei-K23/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix"
 )
 
 func main() {
-	progressBar := spinix.NewProgressBar()
-	.SetWidth(50)
-	.SetColor("\033[32m") // Green
-	.SetLabel("Progress:")
-	.Start()
+	progressBar := spinix.NewProgressBar().
+		SetWidth(50).
+		SetColor("\033[32m").
+		SetLabel("Progress:")
+
+	progressBar.Start()
 
 	for i := 0; i <= 100; i++ {
 		progressBar.Update(i)
@@ -71,6 +80,16 @@ func main() {
 	}
 
 	progressBar.Stop()
+
+    // spinix.NewProgressBar() will also create progress bar with default properties.
+    // e.g
+    // progressBar := spinix.NewProgressBar()
+    // progressBar.Start()
+	// for i := 0; i <= 100; i++ {
+	// 	progressBar.Update(i)
+	// 	time.Sleep(50 * time.Millisecond) // Simulate work
+	// }
+	// progressBar.Stop()
 }
 ```
 
@@ -78,14 +97,16 @@ func main() {
 
 ### Spinners
 
-You can customize the spinner’s message, colors, and theme:
+You can customize the spinner’s message, colors, speed and theme, etc...:
 
 ```go
 func main() {
 	spinner := spinix.NewSpinner().
 		SetMessage("Processing...").
 		SetMessageColor("\033[33m").
-		SetCustomTheme([]string{"🔅", "🔆", "🔅", "🔆"})
+		SetCustomTheme([]string{"▁", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃"}).
+		SetSpinnerColor("\033[31m"). // Red color (you can use every color you want with that format but spinner color will not work with emoji spinner)
+		SetSpeed(200 * time.Millisecond)
 
 	spinner.Start()
 	time.Sleep(2 * time.Second) // Simulate a task
@@ -95,7 +116,7 @@ func main() {
 
 ### Progress Bars
 
-You can customize the progress bar's appearance using various methods:
+You can customize the progress bar's message, width, color, appearance using various methods and etc...:
 
 ```go
 func main() {
@@ -117,11 +138,12 @@ func main() {
 }
 ```
 
-## Use Pre-defined Spinner and Progress bar
+## Use Predefined Spinner and Progress bar
 
 ### Spinners
 
-You can use pre-defined spinner theme that provided by **spinix**:
+You can also use predefined spinner themes that provided by **spinix**:
+See all available predefined spinner themes below
 
 ```go
 func main() {
@@ -141,7 +163,8 @@ func main() {
 
 ### Progress Bars
 
-You can use pre-defined progress bar style that provided by **spinix**:
+You can use predefined progress bar style that provided by **spinix**:
+See all available predefined progress bar styles below
 
 ```go
 func main() {
@@ -162,7 +185,7 @@ func main() {
 
 ## Available Spinner Themes
 
-The Spinix package comes with several predefined spinner themes. Here’s a list of the available styles along with their visualizations:
+The **Spinix** package comes with several predefined spinner themes. Here’s a list of the available styles along with their visualizations:
 
 | Spinner Theme            | Visualization                                |
 | ------------------------ | -------------------------------------------- |
@@ -200,16 +223,16 @@ The Spinix package comes with several predefined spinner themes. Here’s a list
 
 The ProgressBar can be styled using various predefined styles. Here’s a list of available styles:
 
-| Progress Bar Style    | Description                                              |
-| --------------------- | -------------------------------------------------------- |
-| **PbStyleBasic**      | Simple progress bar with basic characters.               |
-| **PbStyleClassic**    | Classic style with borders and filled characters.        |
-| **PbStyleMinimal**    | Minimalistic design with no borders.                     |
-| **PbStyleBold**       | Bold characters with decorative borders.                 |
-| **PbStyleDashed**     | Dashed design for a unique look.                         |
-| **PbStyleElegant**    | Elegant characters and borders for a sophisticated look. |
-| **PbStyleEmoji**      | Fun design using emojis for a playful effect.            |
-| **PbStyleFuturistic** | Futuristic characters and borders for a modern feel.     |
+| Progress Bar Style    | Description                                                |
+| --------------------- | ---------------------------------------------------------- |
+| **PbStyleBasic**      | ===========================------------- 69%               |
+| **PbStyleClassic**    | [############################..] 95%                       |
+| **PbStyleMinimal**    | **\*\***\*\*\***\*\*** 79%                                 |
+| **PbStyleBold**       | ❮■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ ❯ 93%      |
+| **PbStyleDashed**     | [▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▮▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯] 61%        |
+| **PbStyleElegant**    | ❬▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱❭ 79                   |
+| **PbStyleEmoji**      | 🚩🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀✨✨✨✨✨✨✨✨🎯 71% |
+| **PbStyleFuturistic** | ⟦◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉◉○○○○○○○○○○○○○○○○○⟧ 59%             |
 
 ## Example
 
@@ -220,7 +243,7 @@ package main
 
 import (
 	"time"
-	"github.com/Kei-K23/spinix" // Replace with your actual import path
+	"github.com/Kei-K23/spinix"
 )
 
 func main() {

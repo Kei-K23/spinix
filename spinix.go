@@ -12,7 +12,7 @@ import (
 
 type Spinner struct {
 	theme        []string      // Spinner animation frames
-	loaderColor  string        // Color for loader
+	spinnerColor string        // Color for loader
 	speed        time.Duration // Interval to update the loader
 	message      string        // Message to show next to loader
 	messageColor string        // Color for message text
@@ -25,12 +25,12 @@ type Spinner struct {
 // NewSpinner initializes a new Spinner with default settings and theme.
 func NewSpinner() *Spinner {
 	return &Spinner{
-		theme:       SpinnerThemes[SpinnerClassicDots], // Default theme
-		speed:       100 * time.Millisecond,
-		active:      false,
-		loaderColor: "\033[32m", // Green color as default
-		showMessage: true,
-		stopCh:      make(chan struct{}),
+		theme:        SpinnerThemes[SpinnerClassicDots], // Default theme
+		speed:        100 * time.Millisecond,
+		active:       false,
+		spinnerColor: "\033[32m", // Green color as default
+		showMessage:  true,
+		stopCh:       make(chan struct{}),
 	}
 }
 
@@ -66,9 +66,9 @@ func (s *Spinner) SetMessageColor(colorCode string) *Spinner {
 	return s
 }
 
-// SetLoaderColor sets the color code for the spinner itself.
-func (s *Spinner) SetLoaderColor(colorCode string) *Spinner {
-	s.loaderColor = colorCode
+// SetSpinnerColor sets the color code for the spinner itself.
+func (s *Spinner) SetSpinnerColor(colorCode string) *Spinner {
+	s.spinnerColor = colorCode
 	return s
 }
 
@@ -106,7 +106,7 @@ func (s *Spinner) animate() {
 		case <-s.stopCh:
 			return
 		default:
-			fmt.Printf("\r%s%s\033[0m %s%s\033[0m", s.loaderColor, s.theme[frameIdx], s.messageColor, s.message)
+			fmt.Printf("\r%s%s\033[0m %s%s\033[0m", s.spinnerColor, s.theme[frameIdx], s.messageColor, s.message)
 			time.Sleep(s.speed)
 			frameIdx = (frameIdx + 1) % len(s.theme)
 		}

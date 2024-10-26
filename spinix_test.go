@@ -14,8 +14,8 @@ func TestSpinner(t *testing.T) {
 	if spinner.speed != 100*time.Millisecond {
 		t.Errorf("Expected speed 100ms, got %v", spinner.speed)
 	}
-	if spinner.loaderColor != "\033[32m" {
-		t.Errorf("Expected loaderColor green, got %s", spinner.loaderColor)
+	if spinner.spinnerColor != "\033[32m" {
+		t.Errorf("Expected spinnerColor green, got %s", spinner.spinnerColor)
 	}
 	if spinner.active {
 		t.Error("Expected spinner to be inactive initially")
