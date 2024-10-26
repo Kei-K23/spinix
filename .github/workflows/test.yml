@@ -1,0 +1,34 @@
+name: Go Test
+
+# Run the workflow when pushing code to the repository or on pull requests.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Go Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.0
+
+      # Step 3: Install dependencies (optional, if needed)
+      - name: Install dependencies
+        run: go mod tidy
+
+      # Step 4: Run the tests
+      - name: Run tests
+        run: go test ./... -v
