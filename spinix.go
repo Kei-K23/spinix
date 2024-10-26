@@ -1,7 +1,7 @@
-// Package termloader provides terminal-based loading animations including spinners and progress bars.
+// Package spinix provides terminal-based loading animations including spinners and progress bars.
 // It supports customizable themes, colors, and speeds, allowing developers to use various styles
 // to suit different terminal environments and aesthetics.
-package termloader
+package spinix
 
 import (
 	"fmt"

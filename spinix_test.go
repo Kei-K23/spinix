@@ -1,5 +1,5 @@
-// Package termloader provides terminal-based loading animations including spinners and progress bars.
-package termloader
+// Package spinix provides terminal-based loading animations including spinners and progress bars.
+package spinix
 
 import (
 	"testing"
