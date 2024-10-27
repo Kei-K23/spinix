@@ -281,3 +281,9 @@ Contributions are welcome! Please feel free to open issues, submit pull requests
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contributors
+
+Thanks to all the amazing contributors!
+
+[![Contributors](https://contrib.rocks/image?repo=Kei-K23/spinix)](https://github.com/Kei-K23/spinix/graphs/contributors)
