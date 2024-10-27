@@ -20,6 +20,7 @@ type Spinner struct {
 	active       bool          // Status for loading indicator
 	mutex        sync.Mutex    // For thread-safe operations
 	stopCh       chan struct{} // Channel to send stop signal
+	callback     func()        // Optional callback to run after spinner stops
 }
 
 // NewSpinner initializes a new Spinner with default settings and theme.
@@ -32,6 +33,12 @@ func NewSpinner() *Spinner {
 		showMessage:  true,
 		stopCh:       make(chan struct{}),
 	}
+}
+
+// SetCallback sets a callback function to be executed when the spinner stops.
+func (s *Spinner) SetCallback(cb func()) *Spinner {
+	s.callback = cb
+	return s
 }
 
 // Start begins the spinner animation in a goroutine.
@@ -58,6 +65,11 @@ func (s *Spinner) Stop() {
 	s.stopCh = make(chan struct{})
 	s.active = false
 	fmt.Print("\r\033[K") // Clear line
+
+	// Execute callback if set
+	if s.callback != nil {
+		s.callback()
+	}
 }
 
 // SetMessageColor sets the color code for the spinner's message text.
@@ -197,6 +209,7 @@ type ProgressBar struct {
 	active         bool             // Indicates if the progress bar is active
 	mutex          sync.Mutex       // For thread safety
 	stopCh         chan interface{} // Channel to signal stopping of the progress bar
+	callback       func()           // Optional callback to run after progress bar stops
 }
 
 // NewProgressBar initializes a new ProgressBar with default settings.
@@ -212,6 +225,12 @@ func NewProgressBar() *ProgressBar {
 		stopCh:         make(chan interface{}),
 		speed:          100 * time.Millisecond,
 	}
+}
+
+// SetCallback sets a callback function to be executed when the progress bar stops.
+func (pb *ProgressBar) SetCallback(cb func()) *ProgressBar {
+	pb.callback = cb
+	return pb
 }
 
 // SetWidth sets the width of the progress bar.
@@ -288,6 +307,11 @@ func (pb *ProgressBar) Stop() {
 	pb.stopCh = make(chan interface{})
 	pb.active = false
 	fmt.Print("\r\033[K") // Clear line
+
+	// Execute callback if set
+	if pb.callback != nil {
+		pb.callback()
+	}
 }
 
 // Update sets the current progress percentage.

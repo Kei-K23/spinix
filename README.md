@@ -99,7 +99,7 @@ func main() {
 
 ### Spinners
 
-You can customize the spinner’s message, colors, speed and theme, etc...:
+You can customize the spinner's message, colors, speed, theme and define a custom callback function that will run once the and spinner is completed:
 
 ```go
 func main() {
@@ -108,7 +108,10 @@ func main() {
 		SetMessageColor("\033[33m").
 		SetCustomTheme([]string{"▁", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃"}).
 		SetSpinnerColor("\033[31m"). // Red color (you can use every color you want with that format but spinner color will not work with emoji spinner)
-		SetSpeed(200 * time.Millisecond)
+		SetSpeed(200 * time.Millisecond).
+		SetCallback(func() {
+			fmt.Println("The callback function has executed!")
+		})
 
 	spinner.Start()
 	time.Sleep(2 * time.Second) // Simulate a task
@@ -118,7 +121,7 @@ func main() {
 
 ### Progress Bars
 
-You can customize the progress bar's message, width, color, appearance using various methods and etc...:
+You can customize the progress bar's message, width, color, appearance and define a custom callback function that will run once the and progress bar is completed:
 
 ```go
 func main() {
@@ -127,7 +130,10 @@ func main() {
 		SetBarChar("█").
 		SetEmptyChar("░").
 		SetBorders("[", "]").
-		SetShowPercentage(true)
+		SetShowPercentage(true).
+		SetCallback(func() {
+			fmt.Println("The callback function has executed!")
+		})
 
 	progressBar.Start()
 
