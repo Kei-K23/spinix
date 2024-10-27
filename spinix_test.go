@@ -2,13 +2,16 @@
 package spinix
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
 
 // TestSpinner tests the basic functionalities of the Spinner.
 func TestSpinner(t *testing.T) {
-	spinner := NewSpinner()
+	spinner := NewSpinner().SetCallback(func() {
+		fmt.Println("Call after finish spinner")
+	})
 
 	// Test default values
 	if spinner.speed != 100*time.Millisecond {
@@ -37,7 +40,9 @@ func TestSpinner(t *testing.T) {
 
 // TestProgressBar tests the basic functionalities of the ProgressBar.
 func TestProgressBar(t *testing.T) {
-	pb := NewProgressBar()
+	pb := NewProgressBar().SetCallback(func() {
+		fmt.Println("Call after finish progress bar loading")
+	})
 
 	// Test default values
 	if pb.width != 40 {
