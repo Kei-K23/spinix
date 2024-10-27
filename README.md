@@ -284,6 +284,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contributors
 
-Thanks to all the amazing contributors!
+Thanks to all the amazing contributors for making **spinix** better!
 
 [![Contributors](https://contrib.rocks/image?repo=Kei-K23/spinix)](https://github.com/Kei-K23/spinix/graphs/contributors)
