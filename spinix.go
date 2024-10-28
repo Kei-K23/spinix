@@ -10,6 +10,80 @@ import (
 	"time"
 )
 
+// ANSI escape codes
+const (
+	clearScreen = "\033[2J"
+	clearLine   = "\r\033[K"
+	moveCursor  = "\033[H"
+	hideCursor  = "\033[?25l"
+	showCursor  = "\033[?25h"
+)
+
+const (
+	SpinnerClassicDots   SpinnerStyle = "classic_dots"
+	SpinnerLineTheme     SpinnerStyle = "line"
+	SpinnerPulsatingDot  SpinnerStyle = "pulsating_dot"
+	SpinnerGrowingBlock  SpinnerStyle = "growing_block"
+	SpinnerRotatingArrow SpinnerStyle = "rotating_arrow"
+	SpinnerArcLoader     SpinnerStyle = "arc_loader"
+	SpinnerClock         SpinnerStyle = "clock"
+	SpinnerCircleDots    SpinnerStyle = "circle_dots"
+	SpinnerBouncingBall  SpinnerStyle = "bouncing_ball"
+	SpinnerFadingSquares SpinnerStyle = "fading_squares"
+	SpinnerDotsFading    SpinnerStyle = "dots_fading"
+	SpinnerEarth         SpinnerStyle = "earth"
+	SpinnerSnake         SpinnerStyle = "snake"
+	SpinnerTriangle      SpinnerStyle = "triangle"
+	SpinnerSpiral        SpinnerStyle = "spiral"
+	SpinnerWave          SpinnerStyle = "wave"
+	SpinnerWeather       SpinnerStyle = "weather"
+	SpinnerRunningPerson SpinnerStyle = "running_person"
+	SpinnerRunningCat    SpinnerStyle = "running_cat"
+	SpinnerRunningDog    SpinnerStyle = "running_dog"
+	SpinnerCycling       SpinnerStyle = "cycling"
+	SpinnerCarLoading    SpinnerStyle = "car_loading"
+	SpinnerRocket        SpinnerStyle = "rocket"
+	SpinnerOrbit         SpinnerStyle = "orbit"
+	SpinnerTrain         SpinnerStyle = "train"
+	SpinnerAirplane      SpinnerStyle = "airplane"
+	SpinnerFireworks     SpinnerStyle = "fireworks"
+	SpinnerPizzaDelivery SpinnerStyle = "pizza_delivery"
+	SpinnerHeartbeat     SpinnerStyle = "heartbeat"
+)
+
+const (
+	PbStyleBasic      progressBarStyle = "basic"
+	PbStyleClassic    progressBarStyle = "classic"
+	PbStyleMinimal    progressBarStyle = "minimal"
+	PbStyleBold       progressBarStyle = "bold"
+	PbStyleDashed     progressBarStyle = "dashed"
+	PbStyleElegant    progressBarStyle = "elegant"
+	PbStyleEmoji      progressBarStyle = "emoji"
+	PbStyleFuturistic progressBarStyle = "futuristic"
+)
+
+// ProgressBar represents a customizable terminal progress bar.
+type ProgressBar struct {
+	width          int              // Width of the progress bar
+	progress       int              // Current progress percentage (0-100)
+	barChar        string           // Character to display for filled progress
+	emptyChar      string           // Character to display for empty progress
+	leftBorder     string           // Left border of the progress bar
+	rightBorder    string           // Right border of the progress bar
+	color          string           // Color for progress bar
+	label          string           // Optional label text
+	showLabel      bool             // Flag to show or hide label
+	showPercentage bool             // Flag to show or hide progress percentage
+	speed          time.Duration    // Progress bar update speed
+	active         bool             // Indicates if the progress bar is active
+	mutex          sync.Mutex       // For thread safety
+	stopCh         chan interface{} // Channel to signal stopping of the progress bar
+	callback       func()           // Optional callback to run after progress bar stops
+}
+
+// progressBarStyle represents the various style configurations for the progress bar.
+type progressBarStyle string
+
 type Spinner struct {
 	theme        []string      // Spinner animation frames
 	spinnerColor string        // Color for loader
@@ -21,6 +95,39 @@ type Spinner struct {
 	mutex        sync.Mutex    // For thread-safe operations
 	stopCh       chan struct{} // Channel to send stop signal
 	callback     func()        // Optional callback to run after spinner stops
+}
+
+// SpinnerThemes defines several spinner animation styles.
+var SpinnerThemes = map[SpinnerStyle][]string{
+	SpinnerClassicDots:   {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
+	SpinnerLineTheme:     {"-", "\\", "|", "/"},
+	SpinnerPulsatingDot:  {"⠁", "⠂", "⠄", "⠂"},
+	SpinnerGrowingBlock:  {"▁", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃"},
+	SpinnerRotatingArrow: {"→", "↘", "↓", "↙", "←", "↖", "↑", "↗"},
+	SpinnerArcLoader:     {"◜", "◠", "◝", "◞", "◡", "◟"},
+	SpinnerClock:         {"🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚"},
+	SpinnerCircleDots:    {"◐", "◓", "◑", "◒"},
+	SpinnerBouncingBall:  {"⠁", "⠂", "⠄", "⠂"},
+	SpinnerFadingSquares: {"▖", "▘", "▝", "▗"},
+	SpinnerDotsFading:    {"⠁", "⠂", "⠄", "⠂", "⠁", "⠂", "⠄", "⠂"},
+	SpinnerEarth:         {"🌍", "🌎", "🌏"},
+	SpinnerSnake:         {"⠈", "⠐", "⠠", "⢀", "⡀", "⠄", "⠂", "⠁"},
+	SpinnerTriangle:      {"◢", "◣", "◤", "◥"},
+	SpinnerSpiral:        {"▖", "▘", "▝", "▗", "▘", "▝", "▖", "▗"},
+	SpinnerWave:          {"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃", "▂", "▁"},
+	SpinnerWeather:       {"🌤️", "⛅", "🌥️", "☁️", "🌧️", "⛈️", "🌩️", "🌨️"},
+	SpinnerRunningPerson: {"🏃💨", "🏃💨💨", "🏃💨💨💨", "🏃‍♂️💨", "🏃‍♂️💨💨", "🏃‍♀️💨", "🏃‍♀️💨💨"},
+	SpinnerRunningCat:    {"🐱💨", "🐈💨", "🐱💨💨", "🐈💨💨"},
+	SpinnerRunningDog:    {"🐕💨", "🐶💨", "🐕‍🦺💨", "🐕💨💨"},
+	SpinnerCycling:       {"🚴", "🚴‍♂️", "🚴‍♀️", "🚵", "🚵‍♂️", "🚵‍♀️"},
+	SpinnerCarLoading:    {"🚗💨", "🚙💨", "🚓💨", "🚕💨", "🚐💨", "🚔💨"},
+	SpinnerRocket:        {"🚀", "🚀💨", "🚀💨💨", "🚀💨💨💨", "🚀🌌", "🚀🌠"},
+	SpinnerOrbit:         {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"},
+	SpinnerTrain:         {"🚆", "🚄", "🚅", "🚇", "🚊", "🚉"},
+	SpinnerAirplane:      {"✈️ ", "🛫", "🛬", "✈️💨", "✈️💨💨"},
+	SpinnerFireworks:     {"🎆", "🎇", "🎆🎇", "🎇🎆"},
+	SpinnerPizzaDelivery: {"🍕💨", "🍔💨", "🌭💨", "🍟💨"},
+	SpinnerHeartbeat:     {"💓", "💗", "💖", "💘", "💞", "💝", "💖"},
 }
 
 // NewSpinner initializes a new Spinner with default settings and theme.
@@ -50,6 +157,7 @@ func (s *Spinner) Start() {
 		return
 	}
 	s.active = true
+	fmt.Print(hideCursor) // Hide the cursor in terminal
 	go s.animate()
 }
 
@@ -64,7 +172,8 @@ func (s *Spinner) Stop() {
 	close(s.stopCh)
 	s.stopCh = make(chan struct{})
 	s.active = false
-	fmt.Print("\r\033[K") // Clear line
+	fmt.Print(clearLine)  // Clear line
+	fmt.Print(showCursor) // Hide the cursor in terminal
 
 	// Execute callback if set
 	if s.callback != nil {
@@ -127,90 +236,6 @@ func (s *Spinner) animate() {
 
 // SpinnerStyle represents a specific spinner theme.
 type SpinnerStyle string
-
-// SpinnerThemes defines several spinner animation styles.
-var SpinnerThemes = map[SpinnerStyle][]string{
-	SpinnerClassicDots:   {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
-	SpinnerLineTheme:     {"-", "\\", "|", "/"},
-	SpinnerPulsatingDot:  {"⠁", "⠂", "⠄", "⠂"},
-	SpinnerGrowingBlock:  {"▁", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃"},
-	SpinnerRotatingArrow: {"→", "↘", "↓", "↙", "←", "↖", "↑", "↗"},
-	SpinnerArcLoader:     {"◜", "◠", "◝", "◞", "◡", "◟"},
-	SpinnerClock:         {"🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚"},
-	SpinnerCircleDots:    {"◐", "◓", "◑", "◒"},
-	SpinnerBouncingBall:  {"⠁", "⠂", "⠄", "⠂"},
-	SpinnerFadingSquares: {"▖", "▘", "▝", "▗"},
-	SpinnerDotsFading:    {"⠁", "⠂", "⠄", "⠂", "⠁", "⠂", "⠄", "⠂"},
-	SpinnerEarth:         {"🌍", "🌎", "🌏"},
-	SpinnerSnake:         {"⠈", "⠐", "⠠", "⢀", "⡀", "⠄", "⠂", "⠁"},
-	SpinnerTriangle:      {"◢", "◣", "◤", "◥"},
-	SpinnerSpiral:        {"▖", "▘", "▝", "▗", "▘", "▝", "▖", "▗"},
-	SpinnerWave:          {"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█", "▇", "▆", "▅", "▄", "▃", "▂", "▁"},
-	SpinnerWeather:       {"🌤️", "⛅", "🌥️", "☁️", "🌧️", "⛈️", "🌩️", "🌨️"},
-	SpinnerRunningPerson: {"🏃💨", "🏃💨💨", "🏃💨💨💨", "🏃‍♂️💨", "🏃‍♂️💨💨", "🏃‍♀️💨", "🏃‍♀️💨💨"},
-	SpinnerRunningCat:    {"🐱💨", "🐈💨", "🐱💨💨", "🐈💨💨"},
-	SpinnerRunningDog:    {"🐕💨", "🐶💨", "🐕‍🦺💨", "🐕💨💨"},
-	SpinnerCycling:       {"🚴", "🚴‍♂️", "🚴‍♀️", "🚵", "🚵‍♂️", "🚵‍♀️"},
-	SpinnerCarLoading:    {"🚗💨", "🚙💨", "🚓💨", "🚕💨", "🚐💨", "🚔💨"},
-	SpinnerRocket:        {"🚀", "🚀💨", "🚀💨💨", "🚀💨💨💨", "🚀🌌", "🚀🌠"},
-	SpinnerOrbit:         {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"},
-	SpinnerTrain:         {"🚆", "🚄", "🚅", "🚇", "🚊", "🚉"},
-	SpinnerAirplane:      {"✈️ ", "🛫", "🛬", "✈️💨", "✈️💨💨"},
-	SpinnerFireworks:     {"🎆", "🎇", "🎆🎇", "🎇🎆"},
-	SpinnerPizzaDelivery: {"🍕💨", "🍔💨", "🌭💨", "🍟💨"},
-	SpinnerHeartbeat:     {"💓", "💗", "💖", "💘", "💞", "💝", "💖"},
-}
-
-const (
-	SpinnerClassicDots   SpinnerStyle = "classic_dots"
-	SpinnerLineTheme     SpinnerStyle = "line"
-	SpinnerPulsatingDot  SpinnerStyle = "pulsating_dot"
-	SpinnerGrowingBlock  SpinnerStyle = "growing_block"
-	SpinnerRotatingArrow SpinnerStyle = "rotating_arrow"
-	SpinnerArcLoader     SpinnerStyle = "arc_loader"
-	SpinnerClock         SpinnerStyle = "clock"
-	SpinnerCircleDots    SpinnerStyle = "circle_dots"
-	SpinnerBouncingBall  SpinnerStyle = "bouncing_ball"
-	SpinnerFadingSquares SpinnerStyle = "fading_squares"
-	SpinnerDotsFading    SpinnerStyle = "dots_fading"
-	SpinnerEarth         SpinnerStyle = "earth"
-	SpinnerSnake         SpinnerStyle = "snake"
-	SpinnerTriangle      SpinnerStyle = "triangle"
-	SpinnerSpiral        SpinnerStyle = "spiral"
-	SpinnerWave          SpinnerStyle = "wave"
-	SpinnerWeather       SpinnerStyle = "weather"
-	SpinnerRunningPerson SpinnerStyle = "running_person"
-	SpinnerRunningCat    SpinnerStyle = "running_cat"
-	SpinnerRunningDog    SpinnerStyle = "running_dog"
-	SpinnerCycling       SpinnerStyle = "cycling"
-	SpinnerCarLoading    SpinnerStyle = "car_loading"
-	SpinnerRocket        SpinnerStyle = "rocket"
-	SpinnerOrbit         SpinnerStyle = "orbit"
-	SpinnerTrain         SpinnerStyle = "train"
-	SpinnerAirplane      SpinnerStyle = "airplane"
-	SpinnerFireworks     SpinnerStyle = "fireworks"
-	SpinnerPizzaDelivery SpinnerStyle = "pizza_delivery"
-	SpinnerHeartbeat     SpinnerStyle = "heartbeat"
-)
-
-// ProgressBar represents a customizable terminal progress bar.
-type ProgressBar struct {
-	width          int              // Width of the progress bar
-	progress       int              // Current progress percentage (0-100)
-	barChar        string           // Character to display for filled progress
-	emptyChar      string           // Character to display for empty progress
-	leftBorder     string           // Left border of the progress bar
-	rightBorder    string           // Right border of the progress bar
-	color          string           // Color for progress bar
-	label          string           // Optional label text
-	showLabel      bool             // Flag to show or hide label
-	showPercentage bool             // Flag to show or hide progress percentage
-	speed          time.Duration    // Progress bar update speed
-	active         bool             // Indicates if the progress bar is active
-	mutex          sync.Mutex       // For thread safety
-	stopCh         chan interface{} // Channel to signal stopping of the progress bar
-	callback       func()           // Optional callback to run after progress bar stops
-}
 
 // NewProgressBar initializes a new ProgressBar with default settings.
 func NewProgressBar() *ProgressBar {
@@ -292,6 +317,8 @@ func (pb *ProgressBar) Start() {
 		return
 	}
 	pb.active = true
+	fmt.Print(hideCursor)
+
 	go pb.animate()
 }
 
@@ -306,7 +333,8 @@ func (pb *ProgressBar) Stop() {
 	close(pb.stopCh)
 	pb.stopCh = make(chan interface{})
 	pb.active = false
-	fmt.Print("\r\033[K") // Clear line
+	fmt.Print(clearLine)  // Clear line
+	fmt.Print(showCursor) // Hide the cursor in terminal
 
 	// Execute callback if set
 	if pb.callback != nil {
@@ -358,20 +386,6 @@ func (pb *ProgressBar) render() {
 
 	fmt.Print(bar)
 }
-
-// progressBarStyle represents the various style configurations for the progress bar.
-type progressBarStyle string
-
-const (
-	PbStyleBasic      progressBarStyle = "basic"
-	PbStyleClassic    progressBarStyle = "classic"
-	PbStyleMinimal    progressBarStyle = "minimal"
-	PbStyleBold       progressBarStyle = "bold"
-	PbStyleDashed     progressBarStyle = "dashed"
-	PbStyleElegant    progressBarStyle = "elegant"
-	PbStyleEmoji      progressBarStyle = "emoji"
-	PbStyleFuturistic progressBarStyle = "futuristic"
-)
 
 // SetStyle configures the progress bar style based on predefined styles.
 func (pb *ProgressBar) SetStyle(style progressBarStyle) *ProgressBar {
