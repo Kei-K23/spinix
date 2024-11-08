@@ -35,8 +35,9 @@ import (
 
 func main() {
 	spinner := spinix.NewSpinner().
+		SetSpinnerColor("\033[34m").
 		SetMessage("Loading...").
-		SetLoaderColor("\033[34m").
+		SetMessageColor("\033[36m").
 		SetSpeed(100 * time.Millisecond) // Adjust speed if necessary
 
 	spinner.Start()
