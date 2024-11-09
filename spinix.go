@@ -52,14 +52,15 @@ const (
 )
 
 const (
-	PbStyleBasic      progressBarStyle = "basic"
-	PbStyleClassic    progressBarStyle = "classic"
-	PbStyleMinimal    progressBarStyle = "minimal"
-	PbStyleBold       progressBarStyle = "bold"
-	PbStyleDashed     progressBarStyle = "dashed"
-	PbStyleElegant    progressBarStyle = "elegant"
-	PbStyleEmoji      progressBarStyle = "emoji"
-	PbStyleFuturistic progressBarStyle = "futuristic"
+	PbStyleBasic            progressBarStyle = "basic"
+	PbStyleClassic          progressBarStyle = "classic"
+	PbStyleMinimal          progressBarStyle = "minimal"
+	PbStyleBold             progressBarStyle = "bold"
+	PbStyleDashed           progressBarStyle = "dashed"
+	PbStyleElegant          progressBarStyle = "elegant"
+	PbStyleEmoji            progressBarStyle = "emoji"
+	PbStyleFuturistic       progressBarStyle = "futuristic"
+	PbStyleGreenDevelopment progressBarStyle = "green"
 )
 
 // ProgressBar represents a customizable terminal progress bar.
@@ -453,6 +454,15 @@ func (pb *ProgressBar) SetStyle(style progressBarStyle) *ProgressBar {
 		pb.leftBorder = "⟦"
 		pb.rightBorder = "⟧"
 		pb.color = "\033[96m" // Cyan
+
+	case PbStyleGreenDevelopment:
+		pb.width = 25
+		pb.barChar = "🌿"
+		pb.emptyChar = "__"
+		pb.leftBorder = "🌱"
+		pb.rightBorder = "🌳"
+		pb.color = "\033[92m" // Green
 	}
+
 	return pb
 }
