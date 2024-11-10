@@ -275,6 +275,12 @@ func main() {
 }
 ```
 
+### Demo
+
+The demo run for the progress bar with style as `green`.
+
+![green-progress-bar](./images/green.gif)
+
 ## Contributing
 
 Contributions are welcome! Please feel free to open issues, submit pull requests, or provide feedback.
