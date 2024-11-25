@@ -86,16 +86,20 @@ type ProgressBar struct {
 type progressBarStyle string
 
 type Spinner struct {
-	theme        []string      // Spinner animation frames
-	spinnerColor string        // Color for loader
-	speed        time.Duration // Interval to update the loader
-	message      string        // Message to show next to loader
-	messageColor string        // Color for message text
-	showMessage  bool          // Indicate to show message or not
-	active       bool          // Status for loading indicator
-	mutex        sync.Mutex    // For thread-safe operations
-	stopCh       chan struct{} // Channel to send stop signal
-	callback     func()        // Optional callback to run after spinner stops
+	theme            []string      // Spinner animation frames
+	spinnerColor     string        // Color for loader
+	speed            time.Duration // Interval to update the loader
+	message          string        // Message to show next to loader
+	messageColor     string        // Color for message text
+	showMessage      bool          // Indicate to show message or not
+	active           bool          // Status for loading indicator
+	mutex            sync.Mutex    // For thread-safe operations
+	stopCh           chan struct{} // Channel to send stop signal
+	callback         func()        // Optional callback to run after spinner stops
+	lastFrame        string        // Optional frame to show after spinner stops
+	lastFrameColor   string        // Color for stop frame
+	lastMessage      string        // Optional message to display after spinner stops
+	lastMessageColor string        // Color for last message
 }
 
 // SpinnerThemes defines several spinner animation styles.
@@ -174,7 +178,11 @@ func (s *Spinner) Stop() {
 	s.stopCh = make(chan struct{})
 	s.active = false
 	fmt.Print(clearLine)  // Clear line
-	fmt.Print(showCursor) // Hide the cursor in terminal
+	fmt.Print(showCursor) // Show the cursor in terminal
+
+	if len(s.lastFrame) != 0 || len(s.lastMessage) != 0 {
+		fmt.Printf("\r%s%s\033[0m %s%s\u001B[0m\n", s.lastFrameColor, s.lastFrame, s.lastMessageColor, s.lastMessage)
+	}
 
 	// Execute callback if set
 	if s.callback != nil {
@@ -216,6 +224,30 @@ func (s *Spinner) SetCustomTheme(frames []string) *Spinner {
 // SetSpeed adjusts the rotation speed of the spinner's frames.
 func (s *Spinner) SetSpeed(speed time.Duration) *Spinner {
 	s.speed = speed
+	return s
+}
+
+// SetLastFrame allows setting last frame to display after spinner stops.
+func (s *Spinner) SetLastFrame(frame string) *Spinner {
+	s.lastFrame = frame
+	return s
+}
+
+// SetLastFrameColor allows setting color of last frame to display after spinner stops.
+func (s *Spinner) SetLastFrameColor(colorCode string) *Spinner {
+	s.lastFrameColor = colorCode
+	return s
+}
+
+// SetLastMessage sets a message to display after the spinner stops.
+func (s *Spinner) SetLastMessage(message string) *Spinner {
+	s.lastMessage = message
+	return s
+}
+
+// SetLastMessageColor sets color of last message.
+func (s *Spinner) SetLastMessageColor(colorCode string) *Spinner {
+	s.lastMessageColor = colorCode
 	return s
 }
 
